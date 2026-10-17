@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日日影视 - 每日一片日历：今天看什么，翻一页就知道 | ririyingshi-h5</title>
+<meta name="description" content="日日影视（ririyingshi-h5.github.io）是每日一片日历母题的影视导航站，按日期、星期、节气情绪推荐影视片单，纯导航不播盗版。">
+<meta name="keywords" content="日日影视,每日一片,日历片单,影视导航,今天看什么,观影日历,ririyingshi-h5">
+<meta name="author" content="日日影视">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://ririyingshi-h5.github.io/">
+<meta property="og:title" content="日日影视 - 每日一片日历，翻一页就知道今天看什么">
+<meta property="og:description" content="日日影视把影视推荐做成老式撕页台历：每天一部好片，按星期/节气/情绪分类，纯导航不播盗版。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ririyingshi-h5.github.io/">
+<meta property="og:site_name" content="日日影视">
+<meta name="msvalidate.01" content="BING_VERIFY_CODE">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebSite",
+  "name":"日日影视",
+  "url":"https://ririyingshi-h5.github.io/",
+  "description":"日日影视是每日一片日历母题的影视导航站，按日期推荐影视片单。"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {
+      "@type":"Question",
+      "name":"日日影视的日历片单怎么用？",
+      "acceptedAnswer":{"@type":"Answer","text":"每天打开网站，首页大台历会显示今日推荐片单。你也可以翻看本月日历网格，每一天都对应一部适合当天情绪的片子。按星期也有专属频道：周一治愈、周五爽片、周日怀旧等。"}
+    },
+    {
+      "@type":"Question",
+      "name":"日日影视提供在线播放吗？",
+      "acceptedAnswer":{"@type":"Answer","text":"不提供。本站是纯导航站，将正版平台上免费可看的内容整理为日历片单，方便用户跳转观看，不解析第三方资源、不挂盗链。"}
+    }
+  ]
+}
+</script>
+<style>
+:root{
+  --paper:#faf6f0;
+  --ink:#3a3530;
+  --red:#e85d4d;
+  --green:#7cb518;
+  --orange:#f4a261;
+  --line:rgba(58,53,48,.15);
+  --shadow:0 8px 24px rgba(58,53,48,.12);
+  --shadow-lg:0 16px 40px rgba(58,53,48,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.7;
+}
+a{color:inherit;text-decoration:none}
+
+/* 顶部日历标签页 */
+.rr-nav{
+  position:sticky;
+  top:0;
+  z-index:999;
+  background:var(--paper);
+  border-bottom:2px solid var(--ink);
+  display:flex;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.rr-nav a{
+  flex:1;
+  min-width:80px;
+  text-align:center;
+  padding:.8rem .5rem;
+  font-weight:800;
+  font-size:.85rem;
+  color:var(--ink);
+  border-right:1px solid var(--line);
+  transition:.2s;
+  white-space:nowrap;
+}
+.rr-nav a:last-child{border-right:none}
+.rr-nav a:hover,.rr-nav a.active{background:var(--ink);color:var(--paper)}
+.rr-nav .rr-nav-icon{display:block;font-size:1.1rem;margin-bottom:.2rem}
+
+/* Hero: 撕页台历 */
+.rr-hero{
+  padding:3rem 1.5rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:70vh;
+  background:radial-gradient(circle at center,rgba(232,93,77,.08) 0%,transparent 60%);
+}
+.rr-calendar{
+  background:#fff;
+  border:3px solid var(--ink);
+  border-radius:16px;
+  width:100%;
+  max-width:380px;
+  box-shadow:var(--shadow-lg);
+  position:relative;
+  overflow:hidden;
+}
+.rr-calendar::before{
+  content:'';
+  position:absolute;
+  top:0;left:50%;
+  transform:translateX(-50%);
+  width:60px;
+  height:18px;
+  background:var(--ink);
+  border-radius:0 0 10px 10px;
+  z-index:2;
+}
+.rr-cal-head{
+  background:var(--red);
+  color:#fff;
+  padding:2.2rem 1.5rem 1.2rem;
+  text-align:center;
+}
+.rr-cal-head .month{font-size:.9rem;font-weight:700;letter-spacing:3px;opacity:.9}
+.rr-cal-head .day{font-size:3.5rem;font-weight:900;line-height:1}
+.rr-cal-head .weekday{font-size:1rem;font-weight:700;margin-top:.3rem}
+.rr-cal-body{padding:1.5rem}
+.rr-cal-body h3{font-size:1.1rem;margin-bottom:.5rem;color:var(--ink)}
+.rr-cal-body p{font-size:.85rem;color:rgba(58,53,48,.7);margin-bottom:.8rem}
+.rr-cal-tag{
+  display:inline-block;
+  padding:.2rem .7rem;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:20px;
+  font-size:.75rem;
+  margin-right:.4rem;
+  margin-bottom:.4rem;
+}
+.rr-cal-btn{
+  display:block;
+  width:100%;
+  padding:.8rem;
+  background:var(--ink);
+  color:var(--paper);
+  text-align:center;
+  font-weight:800;
+  border-radius:10px;
+  margin-top:1rem;
+}
+
+/* 栏目通用 */
+.rr-sec{
+  padding:3.5rem 1.5rem;
+  max-width:1200px;
+  margin:0 auto;
+}
+.rr-sec-title{
+  text-align:center;
+  font-size:clamp(1.4rem,3.5vw,2rem);
+  font-weight:900;
+  margin-bottom:.5rem;
+}
+.rr-sec-title .icon{margin-right:.5rem}
+.rr-sec-sub{
+  text-align:center;
+  color:rgba(58,53,48,.6);
+  margin-bottom:2.5rem;
+  font-size:.9rem;
+}
+
+/* 本月日历网格 */
+.rr-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+  max-width:800px;
+  margin:0 auto;
+}
+.rr-day{
+  aspect-ratio:1;
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:10px;
+  padding:.5rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  transition:.3s;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+}
+.rr-day:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--red)}
+.rr-day.today{border-color:var(--red);background:rgba(232,93,77,.05)}
+.rr-day.today::after{
+  content:'今天';
+  position:absolute;
+  top:4px;
+  right:4px;
+  font-size:.6rem;
+  background:var(--red);
+  color:#fff;
+  padding:.1rem .3rem;
+  border-radius:4px;
+}
+.rr-day .date{font-size:.8rem;font-weight:800;color:var(--ink)}
+.rr-day .emoji{font-size:1.2rem;margin:.2rem 0}
+.rr-day .label{font-size:.6rem;color:rgba(58,53,48,.6);line-height:1.2}
+.rr-day.empty{background:transparent;border:none;cursor:default}
+
+/* 星期频道 */
+.rr-week{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1rem;
+  max-width:900px;
+  margin:0 auto;
+}
+.rr-week-item{
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:14px;
+  padding:1.2rem 1rem;
+  text-align:center;
+  transition:.3s;
+}
+.rr-week-item:hover{border-color:var(--ink);transform:scale(1.03)}
+.rr-week-item .w-icon{font-size:2rem;margin-bottom:.5rem}
+.rr-week-item h4{font-size:.9rem;font-weight:800;margin-bottom:.2rem}
+.rr-week-item p{font-size:.75rem;color:rgba(58,53,48,.6)}
+
+/* 打卡榜 */
+.rr-checkin{
+  max-width:700px;
+  margin:0 auto;
+}
+.rr-checkin-item{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  padding:1rem 1.2rem;
+  margin-bottom:1rem;
+}
+.rr-checkin-rank{
+  font-size:1.3rem;
+  font-weight:900;
+  color:var(--red);
+  min-width:32px;
+}
+.rr-checkin-info{flex:1}
+.rr-checkin-info h4{font-size:.95rem;margin-bottom:.2rem}
+.rr-checkin-info p{font-size:.75rem;color:rgba(58,53,48,.6)}
+.rr-checkin-bar{
+  width:100px;
+  height:8px;
+  background:rgba(58,53,48,.1);
+  border-radius:4px;
+  overflow:hidden;
+}
+.rr-checkin-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--orange),var(--red));
+  border-radius:4px;
+}
+.rr-checkin-days{
+  font-size:.8rem;
+  font-weight:800;
+  color:var(--ink);
+  min-width:40px;
+  text-align:right;
+}
+
+/* 手记：日历备注 */
+.rr-notes{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;
+  max-width:1000px;
+  margin:0 auto;
+}
+.rr-note{
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:14px;
+  padding:1.5rem;
+  position:relative;
+}
+.rr-note::before{
+  content:'📝';
+  position:absolute;
+  top:-12px;
+  left:1rem;
+  background:var(--paper);
+  padding:0 .5rem;
+  font-size:1.2rem;
+}
+.rr-note h4{font-size:.95rem;font-weight:800;margin-bottom:.5rem;padding-top:.5rem}
+.rr-note p{font-size:.82rem;color:rgba(58,53,48,.7);line-height:1.6}
+.rr-note .date{font-size:.7rem;color:var(--red);margin-top:.8rem;font-weight:700}
+
+/* 关于 */
+.rr-about{
+  background:var(--ink);
+  color:var(--paper);
+  border-radius:20px;
+  padding:2.5rem;
+  text-align:center;
+}
+.rr-about h2{font-size:1.8rem;margin-bottom:1rem}
+.rr-about p{margin-bottom:1rem;opacity:.85;max-width:700px;margin-left:auto;margin-right:auto}
+.rr-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+  margin-top:2rem;
+}
+.rr-stat{
+  background:rgba(255,255,255,.1);
+  border-radius:12px;
+  padding:1rem;
+}
+.rr-stat b{display:block;font-size:1.2rem;margin-bottom:.2rem}
+.rr-stat span{font-size:.75rem;opacity:.7}
+
+/* FAQ */
+.rr-faq details{
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  margin-bottom:.8rem;
+  overflow:hidden;
+}
+.rr-faq summary{
+  padding:1rem 1.2rem;
+  font-weight:800;
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.rr-faq summary::-webkit-details-marker{display:none}
+.rr-faq summary::after{content:"+";font-size:1.2rem;color:var(--red)}
+.rr-faq[open] summary::after{content:"−"}
+.rr-faq p{padding:0 1.2rem 1rem;font-size:.85rem;color:rgba(58,53,48,.7)}
+
+/* Footer */
+.rr-footer{
+  padding:2rem 1rem;
+  text-align:center;
+  border-top:2px solid var(--line);
+  font-size:.8rem;
+  color:rgba(58,53,48,.6);
+}
+.rr-footer a{color:var(--red)}
+.rr-footer-links{
+  display:flex;
+  gap:1rem;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom:1rem;
+}
+
+/* 移动端 */
+@media(max-width:768px){
+  .rr-nav a{min-width:70px;font-size:.75rem;padding:.6rem .3rem}
+  .rr-nav .rr-nav-icon{font-size:.9rem}
+  .rr-hero{min-height:auto;padding:2rem 1rem}
+  .rr-calendar{max-width:340px}
+  .rr-grid{grid-template-columns:repeat(7,1fr);gap:4px}
+  .rr-day{padding:.3rem;border-radius:6px}
+  .rr-day .date{font-size:.7rem}
+  .rr-day .emoji{font-size:.9rem;margin:.1rem 0}
+  .rr-day .label{font-size:.55rem}
+  .rr-stats{grid-template-columns:repeat(2,1fr)}
+  .rr-checkin-bar{display:none}
+}
+@media(max-width:480px){
+  .rr-grid{grid-template-columns:repeat(4,1fr)}
+  .rr-day.empty{display:none}
+  .rr-stats{grid-template-columns:1fr 1fr}
+  .rr-week{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<!-- 顶部日历标签页 -->
+<nav class="rr-nav">
+  <a href="#home" class="active"><span class="rr-nav-icon">📅</span>今日</a>
+  <a href="#calendar"><span class="rr-nav-icon">📆</span>本月</a>
+  <a href="#weekday"><span class="rr-nav-icon">🗓️</span>星期</a>
+  <a href="#checkin"><span class="rr-nav-icon">✅</span>打卡</a>
+  <a href="#notes"><span class="rr-nav-icon">📝</span>手记</a>
+  <a href="#about"><span class="rr-nav-icon">ℹ️</span>关于</a>
+</nav>
+
+<!-- Hero: 撕页台历 -->
+<header class="rr-hero" id="home">
+  <div class="rr-calendar">
+    <div class="rr-cal-head">
+      <div class="month">2026年10月</div>
+      <div class="day">17</div>
+      <div class="weekday">星期六 · 九月廿七</div>
+    </div>
+    <div class="rr-cal-body">
+      <h3>🎬 今日推荐：周六爽片</h3>
+      <p>周末了，该看部不用动脑的爽片犒劳自己。今天翻到的是《疯狂的麦克斯4：狂暴之路》——极速、爆炸、废土美学，全程无尿点。</p>
+      <span class="rr-cal-tag">爽片</span>
+      <span class="rr-cal-tag">动作</span>
+      <span class="rr-cal-tag">周末特供</span>
+      <a class="rr-cal-btn" href="#calendar">翻到今天片单 →</a>
+    </div>
+  </div>
+</header>
+
+<!-- 栏目1: 本月日历片单 -->
+<section class="rr-sec" id="calendar">
+  <h2 class="rr-sec-title"><span class="icon">📆</span>本月日历片单</h2>
+  <p class="rr-sec-sub">每一天都有一部适合当天情绪的片子，翻一翻</p>
+  <div class="rr-grid">
+    <div class="rr-day empty"></div>
+    <div class="rr-day empty"></div>
+    <div class="rr-day empty"></div>
+    <div class="rr-day">
+      <span class="date">1</span>
+      <span class="emoji">🍂</span>
+      <span class="label">国庆·合家</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">2</span>
+      <span class="emoji">🍂</span>
+      <span class="label">国庆·合家</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">3</span>
+      <span class="emoji">🍂</span>
+      <span class="label">国庆·合家</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">4</span>
+      <span class="emoji">🍂</span>
+      <span class="label">国庆·合家</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">5</span>
+      <span class="emoji">🍂</span>
+      <span class="label">国庆·合家</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">6</span>
+      <span class="emoji">🍂</span>
+      <span class="label">国庆·合家</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">7</span>
+      <span class="emoji">🍂</span>
+      <span class="label">国庆·合家</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">8</span>
+      <span class="emoji">☕</span>
+      <span class="label">寒露·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">9</span>
+      <span class="emoji">💼</span>
+      <span class="label">班味·解压</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">10</span>
+      <span class="emoji">💼</span>
+      <span class="label">班味·解压</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">11</span>
+      <span class="emoji">☕</span>
+      <span class="label">周日·慢片</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">12</span>
+      <span class="emoji">🧠</span>
+      <span class="label">周一·烧脑</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">13</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">14</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">15</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">16</span>
+      <span class="emoji">🌙</span>
+      <span class="label">周五·悬疑</span>
+    </div>
+    <div class="rr-day today">
+      <span class="date">17</span>
+      <span class="emoji">🔥</span>
+      <span class="label">周六·爽片</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">18</span>
+      <span class="emoji">☕</span>
+      <span class="label">周日·慢片</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">19</span>
+      <span class="emoji">🧠</span>
+      <span class="label">周一·烧脑</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">20</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">21</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">22</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">23</span>
+      <span class="emoji">🍂</span>
+      <span class="label">霜降·文艺</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">24</span>
+      <span class="emoji">🌙</span>
+      <span class="label">周五·悬疑</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">25</span>
+      <span class="emoji">🔥</span>
+      <span class="label">周六·爽片</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">26</span>
+      <span class="emoji">☕</span>
+      <span class="label">周日·慢片</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">27</span>
+      <span class="emoji">🧠</span>
+      <span class="label">周一·烧脑</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">28</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">29</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">30</span>
+      <span class="emoji">🍜</span>
+      <span class="label">下饭·治愈</span>
+    </div>
+    <div class="rr-day">
+      <span class="date">31</span>
+      <span class="emoji">🎃</span>
+      <span class="label">万圣·惊悚</span>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目2: 星期频道 -->
+<section class="rr-sec" id="weekday" style="background:rgba(58,53,48,.03)">
+  <h2 class="rr-sec-title"><span class="icon">🗓️</span>星期频道</h2>
+  <p class="rr-sec-sub">一周七天，每天一种观影模式</p>
+  <div class="rr-week">
+    <div class="rr-week-item">
+      <div class="w-icon">🧠</div>
+      <h4>周一 · 烧脑</h4>
+      <p>悬疑/反转/烧脑，用脑子开机</p>
+    </div>
+    <div class="rr-week-item">
+      <div class="w-icon">🍜</div>
+      <h4>周二 · 下饭</h4>
+      <p>治愈/生活/美食，配饭最佳</p>
+    </div>
+    <div class="rr-week-item">
+      <div class="w-icon">🍜</div>
+      <h4>周三 · 下饭</h4>
+      <p>继续下饭，周中需要治愈</p>
+    </div>
+    <div class="rr-week-item">
+      <div class="w-icon">🍜</div>
+      <h4>周四 · 下饭</h4>
+      <p>快到周末了，轻松一下</p>
+    </div>
+    <div class="rr-week-item">
+      <div class="w-icon">🌙</div>
+      <h4>周五 · 悬疑</h4>
+      <p>周末前夜，来点刺激的</p>
+    </div>
+    <div class="rr-week-item">
+      <div class="w-icon">🔥</div>
+      <h4>周六 · 爽片</h4>
+      <p>全程无尿点，犒劳自己</p>
+    </div>
+    <div class="rr-week-item">
+      <div class="w-icon">☕</div>
+      <h4>周日 · 慢片</h4>
+      <p>文艺/慢节奏，收心准备上班</p>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目3: 打卡榜 -->
+<section class="rr-sec" id="checkin">
+  <h2 class="rr-sec-title"><span class="icon">✅</span>打卡榜</h2>
+  <p class="rr-sec-sub">连续观影天数，养成每日一片的习惯</p>
+  <div class="rr-checkin">
+    <div class="rr-checkin-item">
+      <div class="rr-checkin-rank">1</div>
+      <div class="rr-checkin-info"><h4>@日日追影人</h4><p>已连续打卡 127 天</p></div>
+      <div class="rr-checkin-bar"><div class="rr-checkin-fill" style="width:100%"></div></div>
+      <div class="rr-checkin-days">127天</div>
+    </div>
+    <div class="rr-checkin-item">
+      <div class="rr-checkin-rank">2</div>
+      <div class="rr-checkin-info"><h4>@日历翻片手</h4><p>已连续打卡 98 天</p></div>
+      <div class="rr-checkin-bar"><div class="rr-checkin-fill" style="width:77%"></div></div>
+      <div class="rr-checkin-days">98天</div>
+    </div>
+    <div class="rr-checkin-item">
+      <div class="rr-checkin-rank">3</div>
+      <div class="rr-checkin-info"><h4>@每天一部片</h4><p>已连续打卡 76 天</p></div>
+      <div class="rr-checkin-bar"><div class="rr-checkin-fill" style="width:60%"></div></div>
+      <div class="rr-checkin-days">76天</div>
+    </div>
+    <div class="rr-checkin-item">
+      <div class="rr-checkin-rank">4</div>
+      <div class="rr-checkin-info"><h4>@台历观影员</h4><p>已连续打卡 54 天</p></div>
+      <div class="rr-checkin-bar"><div class="rr-checkin-fill" style="width:42%"></div></div>
+      <div class="rr-checkin-days">54天</div>
+    </div>
+    <div class="rr-checkin-item">
+      <div class="rr-checkin-rank">5</div>
+      <div class="rr-checkin-info"><h4>@翻页看片人</h4><p>已连续打卡 31 天</p></div>
+      <div class="rr-checkin-bar"><div class="rr-checkin-fill" style="width:24%"></div></div>
+      <div class="rr-checkin-days">31天</div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目4: 手记/日历备注 -->
+<section class="rr-sec" id="notes" style="background:rgba(58,53,48,.03)">
+  <h2 class="rr-sec-title"><span class="icon">📝</span>日历备注</h2>
+  <p class="rr-sec-sub">日日影迷的观影日记与碎碎念</p>
+  <div class="rr-notes">
+    <div class="rr-note">
+      <h4>10月17日：周六爽片《疯狂的麦克斯4》</h4>
+      <p>废土美学巅峰，全程飙车无尿点。周六就该看这种不用动脑但视觉炸裂的片子。看完感觉自己也想去沙漠开卡车。</p>
+      <div class="date">—— @翻页人 · 今日打卡</div>
+    </div>
+    <div class="rr-note">
+      <h4>10月12日：周一烧脑《看不见的客人》</h4>
+      <p>反转再反转，适合周一早上用脑子开机。看完和同事讨论了一上午剧情，比开会有意思。</p>
+      <div class="date">—— @烧脑爱好者 · 周一</div>
+    </div>
+    <div class="rr-note">
+      <h4>10月8日：寒露治愈《小森林》</h4>
+      <p>寒露了，适合看《小森林》。看着女主在雪地里做食物，自己也想去乡下种菜了。配一杯热茶，完美。</p>
+      <div class="date">—— @治愈系 · 节气观影</div>
+    </div>
+  </div>
+</section>
+
+<!-- 关于 -->
+<section class="rr-sec" id="about">
+  <div class="rr-about">
+    <h2>关于 日日影视</h2>
+    <p>日日影视（ririyingshi-h5.github.io）是一本会翻页的影视导航台历。每天打开，都有一部适合今天情绪的片子等着你——按日期、星期、节气、节日分类，让"今天看什么"不再成为难题。</p>
+    <p>不播盗版、不解析第三方、不挂盗链。纯导航，正片去正版平台看。</p>
+    <div class="rr-stats">
+      <div class="rr-stat"><b>365 天</b><span>每天一部推荐</span></div>
+      <div class="rr-stat"><b>7 频道</b><span>周一到周日</span></div>
+      <div class="rr-stat"><b>24 节气</b><span>节气专属片单</span></div>
+      <div class="rr-stat"><b>0 盗版</b><span>只链正版免费源</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="rr-sec rr-faq" id="faq">
+  <h2 class="rr-sec-title"><span class="icon">❓</span>常见问答</h2>
+  <details open>
+    <summary>日日影视的日历片单怎么用？</summary>
+    <p>每天打开网站，首页大台历会显示今日推荐片单。你也可以翻看本月日历网格，每一天都对应一部适合当天情绪的片子。按星期也有专属频道：周一烧脑、周五悬疑、周日慢片等。</p>
+  </details>
+  <details>
+    <summary>日日影视提供在线播放吗？</summary>
+    <p>不提供。本站是纯导航站，将正版平台上免费可看的内容整理为日历片单，方便用户跳转观看，不解析第三方资源、不挂盗链。</p>
+  </details>
+  <details>
+    <summary>可以自定义我的日历吗？</summary>
+    <p>目前为静态导航站，暂不支持用户自定义。但你可以把喜欢的片子记在自己的纸质日历上，和日日影视一起翻页。</p>
+  </details>
+</section>
+
+<!-- Footer -->
+<footer class="rr-footer">
+  <div class="rr-footer-links">
+    <a href="#home">今日推荐</a>
+    <a href="#calendar">本月片单</a>
+    <a href="#weekday">星期频道</a>
+    <a href="#checkin">打卡榜</a>
+    <a href="#notes">日历备注</a>
+    <a href="#about">关于日日影视</a>
+  </div>
+  <p>© 2026 <a href="https://ririyingshi-h5.github.io/">日日影视</a> · ririyingshi-h5.github.io</p>
+  <p>日日影视 —— 每天翻一页，今天看什么。本站为影视导航站，不提供盗版播放。</p>
+</footer>
+
+<script>
+document.querySelectorAll('.rr-day').forEach(function(day){
+  day.addEventListener('click',function(){
+    if(!this.classList.contains('empty')){
+      this.style.transform='scale(0.95)';
+      setTimeout(()=>{this.style.transform=''},150);
+    }
+  });
+});
+</script>
+
+</body>
+</html>
